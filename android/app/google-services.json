@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "114731951529",
+    "project_id": "info-expense-tracker",
+    "storage_bucket": "info-expense-tracker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:114731951529:android:a0552f0f28e31a65fc10b8",
+        "android_client_info": {
+          "package_name": "com.example.coffeeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXiz8u7FIVlmh278lRRjfE4Z1gplG2C8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
