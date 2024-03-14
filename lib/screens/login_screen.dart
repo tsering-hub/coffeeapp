@@ -1,3 +1,4 @@
+import 'package:coffeeapp/screens/dashboard.dart';
 import 'package:coffeeapp/screens/sign_up.dart';
 import 'package:coffeeapp/services/auth_service.dart';
 import 'package:coffeeapp/utils/appvalidator.dart';
@@ -32,6 +33,7 @@ class _LoginViewState extends State<LoginView> {
       };
 
       await authServerice.login(data, context);
+
       setState(() {
         isLoader = false;
       });
