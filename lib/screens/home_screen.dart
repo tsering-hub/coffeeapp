@@ -1,9 +1,12 @@
 import 'package:coffeeapp/screens/login_screen.dart';
+import 'package:coffeeapp/widgets/add_transaction_form.dart';
+import 'package:coffeeapp/widgets/hero_card.dart';
+import 'package:coffeeapp/widgets/transaction_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
+// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_literals_to_create_immutables
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -30,9 +33,29 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  _dialogBuilder(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: AddTransactionForm(),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _dialogBuilder(context);
+        },
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.blue.shade900,
+      ),
       appBar: AppBar(
         backgroundColor: Colors.blue.shade900,
         actions: [
@@ -52,18 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Container(
           width: double.infinity,
-          color: Colors.blue.shade900,
           child: Column(
-            children: [
-              Text(
-                "Total Balance",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    height: 1.2),
-              ),
-            ],
+            children: [HeroCard(), TransactionsCard()],
           )),
     );
   }

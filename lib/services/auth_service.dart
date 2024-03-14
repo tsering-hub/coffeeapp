@@ -2,6 +2,7 @@ import 'package:coffeeapp/screens/dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+// ignore_for_file: prefer_const_constructors
 class AuthServerice {
   createUser(data, context) async {
     try {

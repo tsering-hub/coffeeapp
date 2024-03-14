@@ -4,6 +4,8 @@ import 'package:coffeeapp/services/auth_service.dart';
 import 'package:coffeeapp/utils/appvalidator.dart';
 import 'package:flutter/material.dart';
 
+// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_literals_to_create_immutables
 class LoginView extends StatefulWidget {
   LoginView({super.key});
 
