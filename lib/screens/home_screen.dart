@@ -1,7 +1,7 @@
 import 'package:coffeeapp/screens/login_screen.dart';
 import 'package:coffeeapp/widgets/add_transaction_form.dart';
 import 'package:coffeeapp/widgets/hero_card.dart';
-import 'package:coffeeapp/widgets/transaction_card.dart';
+import 'package:coffeeapp/widgets/transactions_cards.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  final userId = FirebaseAuth.instance.currentUser!.uid;
   _dialogBuilder(BuildContext context) {
     return showDialog(
         context: context,
@@ -73,11 +74,15 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Container(
-          width: double.infinity,
+      body: SingleChildScrollView(
           child: Column(
-            children: [HeroCard(), TransactionsCard()],
-          )),
+        children: [
+          HeroCard(
+            userId: userId,
+          ),
+          TransactionsCard()
+        ],
+      )),
     );
   }
 }

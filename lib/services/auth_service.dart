@@ -1,15 +1,18 @@
 import 'package:coffeeapp/screens/dashboard.dart';
+import 'package:coffeeapp/services/db.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 // ignore_for_file: prefer_const_constructors
 class AuthServerice {
+  var db = Db();
   createUser(data, context) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: data['email'],
         password: data['password'],
       );
+      await db.addUser(data, context);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => Dashboard()),

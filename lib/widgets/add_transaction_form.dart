@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coffeeapp/utils/appvalidator.dart';
 import 'package:coffeeapp/widgets/category_dropdown.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
+import 'package:intl/intl.dart';
 
 class AddTransactionForm extends StatefulWidget {
   const AddTransactionForm({super.key});
@@ -16,17 +20,69 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
   var appValidator = AppValidator();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  var amountEditController = TextEditingController();
+  var titleEditController = TextEditingController();
+  var uid = Uuid();
+
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         isLoader = true;
       });
-      // var data = {
-      //   'email': _emailController.text,
-      //   'password': _passwordController.text,
-      // };
+      final user = FirebaseAuth.instance.currentUser;
+      int timeStamp = DateTime.now().millisecondsSinceEpoch;
+      var amount = int.parse(amountEditController.text);
+      DateTime date = DateTime.now();
+      var id = uid.v4();
+      String monthyear = DateFormat('MMM y').format(date);
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .get();
 
-      // await authServerice.login(data, context);
+      int remainingAmount = userDoc['remainingAmount'];
+      int totalCredit = userDoc['totalCredit'];
+      int totalDebit = userDoc['totalDebit'];
+
+      if (type == 'credit') {
+        remainingAmount += amount;
+        totalCredit += amount;
+      } else {
+        remainingAmount -= amount;
+        totalDebit += amount;
+      }
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .update({
+        "remainingAmount": remainingAmount,
+        "totalCredit": totalCredit,
+        "totalDebit": totalDebit,
+        "updatedAt": timeStamp,
+      });
+
+      var data = {
+        'id': id,
+        'title': titleEditController.text,
+        'amount': amountEditController.text,
+        'type': type,
+        'category': category,
+        "timeStamp": timeStamp,
+        "totalCredit": totalCredit,
+        "totalDebit": totalDebit,
+        "remainingAmount": remainingAmount,
+        "monthyear": monthyear,
+      };
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .collection('transactions')
+          .doc(id)
+          .set(data);
+
+      Navigator.pop(context);
 
       setState(() {
         isLoader = false;
@@ -38,13 +94,16 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Form(
+        key: _formKey,
         child: Column(
           children: [
             TextFormField(
+              controller: titleEditController,
               validator: appValidator.isEmptyCheck,
               decoration: InputDecoration(labelText: "Title"),
             ),
             TextFormField(
+              controller: amountEditController,
               validator: appValidator.isEmptyCheck,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: "Amount"),
@@ -84,9 +143,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
             ),
             ElevatedButton(
                 onPressed: () {
-                  if (isLoader == false) {
-                    _submitForm();
-                  }
+                  isLoader ? print("Loading") : _submitForm();
                 },
                 child: isLoader
                     ? Center(child: CircularProgressIndicator())

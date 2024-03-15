@@ -1,3 +1,4 @@
+import 'package:coffeeapp/widgets/time_line_month.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,15 @@ class TransactionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text("Transaction"),
+      appBar: AppBar(
+        title: Text("Expansive"),
+      ),
+      body: Column(
+        children: [
+          TimeLineMonth(),
+          Text("Transaction"),
+        ],
+      ),
     );
   }
 }
