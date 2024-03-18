@@ -41,7 +41,7 @@ class _CategoryListState extends State<CategoryList> {
     final selectedCatIndex = categorylist
         .indexWhere((category) => category['name'] == currentCategory);
     if (selectedCatIndex != -1) {
-      final scrollOffset = (selectedCatIndex * 100.0) - 85;
+      final scrollOffset = (selectedCatIndex * 100.0) - 30;
       scrollController.animateTo(scrollOffset,
           duration: Duration(milliseconds: 500), curve: Curves.ease);
     }
