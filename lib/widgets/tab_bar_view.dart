@@ -1,7 +1,11 @@
+import 'package:coffeeapp/widgets/transaction_list.dart';
 import 'package:flutter/material.dart';
 
 class TypeTabBar extends StatelessWidget {
-  const TypeTabBar({super.key});
+  TypeTabBar({super.key, required this.category, required this.monthYear});
+
+  final String category;
+  final String monthYear;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +22,13 @@ class TypeTabBar extends StatelessWidget {
                     text: "Debit",
                   ),
                 ]),
-                Expanded(child: TabBarView(children: []))
+                Expanded(
+                    child: TabBarView(children: [
+                  TransactionList(
+                      category: category, type: 'credit', monthYear: monthYear),
+                  TransactionList(
+                      category: category, type: 'debit', monthYear: monthYear),
+                ]))
               ],
             )));
   }

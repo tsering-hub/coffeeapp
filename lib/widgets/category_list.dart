@@ -12,12 +12,18 @@ class CategoryList extends StatefulWidget {
 }
 
 class _CategoryListState extends State<CategoryList> {
-  String currentCategory = "";
+  String currentCategory = "All";
 
   List<Map<String, dynamic>> categorylist = [];
 
   final scrollController = ScrollController();
   var appIcons = AppIcons();
+
+  var addCat = {
+    "name": "All",
+    "icon": FontAwesomeIcons.cartPlus,
+  };
+
   @override
   void initState() {
     super.initState();
@@ -26,24 +32,20 @@ class _CategoryListState extends State<CategoryList> {
       categorylist.insert(0, addCat);
     });
 
-    // Future.delayed(Duration(seconds: 1), () {
-    //   scrollToSelectedMonth();
-    // });
+    Future.delayed(Duration(seconds: 1), () {
+      scrollToSelectedCat();
+    });
   }
 
-  // scrollToSelectedMonth() {
-  //   final selectedMonthIndex = months.indexOf(currentMonth);
-  //   if (selectedMonthIndex != -1) {
-  //     final scrollOffset = (selectedMonthIndex * 100.0) - 170;
-  //     scrollController.animateTo(scrollOffset,
-  //         duration: Duration(milliseconds: 500), curve: Curves.ease);
-  //   }
-  // }
-
-  var addCat = {
-    "name": "All",
-    "icon": FontAwesomeIcons.cartPlus,
-  };
+  scrollToSelectedCat() {
+    final selectedCatIndex = categorylist
+        .indexWhere((category) => category['name'] == currentCategory);
+    if (selectedCatIndex != -1) {
+      final scrollOffset = (selectedCatIndex * 100.0) - 85;
+      scrollController.animateTo(scrollOffset,
+          duration: Duration(milliseconds: 500), curve: Curves.ease);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +63,7 @@ class _CategoryListState extends State<CategoryList> {
                 currentCategory = data['name'];
                 widget.onChanged(data['name']);
               });
-              // scrollToSelectedMonth();
+              scrollToSelectedCat();
             },
             child: Container(
               margin: EdgeInsets.all(6),
