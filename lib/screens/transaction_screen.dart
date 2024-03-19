@@ -1,7 +1,9 @@
 import 'package:coffeeapp/screens/change_password_screen.dart';
+import 'package:coffeeapp/widgets/category_dropdown.dart';
 import 'package:coffeeapp/widgets/category_list.dart';
 import 'package:coffeeapp/widgets/tab_bar_view.dart';
 import 'package:coffeeapp/widgets/time_line_month.dart';
+import 'package:coffeeapp/widgets/transaction_category_dropdown.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -30,7 +32,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
   }
 
   openChangePassword() {
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => ChangePasswordScreen()),
     );
@@ -60,14 +62,29 @@ class _TransactionScreenState extends State<TransactionScreen> {
               }
             },
           ),
-          CategoryList(
-            onChanged: (String? value) {
-              if (value != null) {
-                setState(() {
-                  category = value;
-                });
-              }
-            },
+          // CategoryList(
+          //   onChanged: (String? value) {
+          //     if (value != null) {
+          //       setState(() {
+          //         category = value;
+          //       });
+          //     }
+          //   },
+          // ),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+            child: TransactionCategoryDropDown(
+                cattype: category,
+                onChanged: (String? value) {
+                  setState(() {
+                    if (value != null) {
+                      setState(() {
+                        category = value;
+                      });
+                    }
+                  });
+                }),
           ),
           TypeTabBar(
             category: category,

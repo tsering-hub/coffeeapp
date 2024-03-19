@@ -46,10 +46,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => Dashboard()),
-            );
+            Navigator.pop(context);
           },
         ),
         title: Text(
