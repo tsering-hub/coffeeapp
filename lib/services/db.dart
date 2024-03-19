@@ -22,4 +22,22 @@ class Db {
           });
     });
   }
+
+  Future<void> updateUserDetails(data, context) async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    await users
+        .doc(userId)
+        .update(data)
+        .then((value) => print("User password updated"))
+        .catchError((error) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Failed to update'),
+              content: Text(error.toString()),
+            );
+          });
+    });
+  }
 }

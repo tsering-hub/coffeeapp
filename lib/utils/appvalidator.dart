@@ -23,7 +23,7 @@ class AppValidator {
 
   String? validatePassword(value) {
     if (value!.isEmpty) {
-      return 'Please enter an phone number';
+      return 'Please enter password';
     }
 
     return null;

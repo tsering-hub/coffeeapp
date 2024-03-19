@@ -51,4 +51,33 @@ class AuthServerice {
           });
     }
   }
+
+  changePassword(data, context) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final email = currentUser.email;
+      try {
+        var cred = EmailAuthProvider.credential(
+            email: email.toString(), password: data['oldpassword']);
+
+        await currentUser.reauthenticateWithCredential(cred).then((value) {
+          currentUser.updatePassword(data['newpassword']);
+        });
+        await db.updateUserDetails({'password': data['newpassword']}, context);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Dashboard()),
+        );
+      } catch (e) {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Login Error'),
+                content: Text(e.toString()),
+              );
+            });
+      }
+    }
+  }
 }

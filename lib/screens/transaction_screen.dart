@@ -1,3 +1,4 @@
+import 'package:coffeeapp/screens/change_password_screen.dart';
 import 'package:coffeeapp/widgets/category_list.dart';
 import 'package:coffeeapp/widgets/tab_bar_view.dart';
 import 'package:coffeeapp/widgets/time_line_month.dart';
@@ -28,10 +29,24 @@ class _TransactionScreenState extends State<TransactionScreen> {
     });
   }
 
+  openChangePassword() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => ChangePasswordScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: openChangePassword,
+              icon: Icon(
+                Icons.settings,
+              ))
+        ],
         title: Text("Expansive"),
       ),
       body: Column(
