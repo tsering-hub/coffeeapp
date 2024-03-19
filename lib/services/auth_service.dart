@@ -73,7 +73,7 @@ class AuthServerice {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: Text('Login Error'),
+                title: Text('Failed to update'),
                 content: Text(e.toString()),
               );
             });

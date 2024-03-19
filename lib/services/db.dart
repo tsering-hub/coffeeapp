@@ -40,4 +40,30 @@ class Db {
           });
     });
   }
+
+  Future<void> deleteCategoryById(id, context) async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    await users
+        .doc(userId)
+        .collection('categories')
+        .doc(id)
+        .delete()
+        .then((value) => showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Category deleted'),
+              );
+            }))
+        .catchError((error) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Failed to delete'),
+              content: Text(error.toString()),
+            );
+          });
+    });
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:coffeeapp/screens/category_screen.dart';
 import 'package:coffeeapp/screens/home_screen.dart';
 import 'package:coffeeapp/screens/login_screen.dart';
 import 'package:coffeeapp/screens/transaction_screen.dart';
@@ -19,7 +20,7 @@ class _DashboardState extends State<Dashboard> {
 
   int currentIndex = 0;
 
-  var pageViewList = [HomeScreen(), TransactionScreen()];
+  var pageViewList = [HomeScreen(), TransactionScreen(),CategoryScreen()];
 
   
   @override

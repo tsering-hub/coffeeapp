@@ -42,17 +42,25 @@ class _TransactionScreenState extends State<TransactionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue.shade900,
         actions: [
           IconButton(
               onPressed: openChangePassword,
               icon: Icon(
                 Icons.settings,
+                color: Colors.white,
               ))
         ],
-        title: Text("Expansive"),
+        title: Text(
+          "Expansive",
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: Column(
         children: [
+          SizedBox(
+            height: 5,
+          ),
           TimeLineMonth(
             onChanged: (String? value) {
               if (value != null) {

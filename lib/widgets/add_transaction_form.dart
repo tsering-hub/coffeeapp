@@ -108,6 +108,9 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: "Amount"),
             ),
+            SizedBox(
+              height: 10,
+            ),
             CategoryDropDown(
                 cattype: category,
                 onChanged: (String? value) {
@@ -141,13 +144,19 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
             SizedBox(
               height: 16,
             ),
-            ElevatedButton(
-                onPressed: () {
-                  isLoader ? print("Loading") : _submitForm();
-                },
-                child: isLoader
-                    ? Center(child: CircularProgressIndicator())
-                    : Text("Add Transaction"))
+            Container(
+              width: double.infinity,
+              child: ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Colors.blue.shade900)),
+                  onPressed: () {
+                    isLoader ? print("Loading") : _submitForm();
+                  },
+                  child: isLoader
+                      ? Center(child: CircularProgressIndicator())
+                      : Text("Add Transaction")),
+            )
           ],
         ),
       ),

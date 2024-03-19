@@ -34,6 +34,14 @@ class NavBar extends StatelessWidget {
           ),
           label: 'Transaction',
         ),
+        NavigationDestination(
+          icon: Icon(Icons.category),
+          selectedIcon: Icon(
+            Icons.category,
+            color: Colors.white,
+          ),
+          label: 'Category',
+        ),
       ],
     );
   }

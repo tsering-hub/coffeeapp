@@ -43,7 +43,6 @@ class TransactionList extends StatelessWidget {
         return ListView.builder(
           shrinkWrap: true,
           itemCount: data.length,
-          physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             var cardData = data[index];
             return TransactionCard(

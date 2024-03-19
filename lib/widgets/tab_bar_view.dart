@@ -22,6 +22,9 @@ class TypeTabBar extends StatelessWidget {
                     text: "Debit",
                   ),
                 ]),
+                SizedBox(
+                  height: 5,
+                ),
                 Expanded(
                     child: TabBarView(children: [
                   TransactionList(

@@ -76,4 +76,6 @@ class AppIcons {
         orElse: () => {'icon': FontAwesomeIcons.shoppingCart});
     return category['icon'];
   }
+
+
 }

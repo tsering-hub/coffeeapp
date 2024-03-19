@@ -136,8 +136,9 @@ class CardOne extends StatelessWidget {
                   Text(
                     "Rs ${amount}",
                     style: TextStyle(
+                        overflow: TextOverflow.ellipsis,
                         color: color,
-                        fontSize: 30,
+                        fontSize: 20,
                         fontWeight: FontWeight.w600),
                   )
                 ],
