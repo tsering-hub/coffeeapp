@@ -15,7 +15,7 @@ class AddTransactionForm extends StatefulWidget {
 
 class _AddTransactionFormState extends State<AddTransactionForm> {
   var type = "credit";
-  var category = "Others";
+  var category;
   var isLoader = false;
   var appValidator = AppValidator();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -67,7 +67,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
         'title': titleEditController.text,
         'amount': amountEditController.text,
         'type': type,
-        'category': category,
+        'categoryId': category,
         "timeStamp": timeStamp,
         "totalCredit": totalCredit,
         "totalDebit": totalDebit,
@@ -155,7 +155,10 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                   },
                   child: isLoader
                       ? Center(child: CircularProgressIndicator())
-                      : Text("Add Transaction")),
+                      : Text(
+                          "Add Transaction",
+                          style: TextStyle(color: Colors.white),
+                        )),
             )
           ],
         ),

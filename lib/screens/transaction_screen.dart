@@ -18,7 +18,7 @@ class TransactionScreen extends StatefulWidget {
 }
 
 class _TransactionScreenState extends State<TransactionScreen> {
-  var category = "All";
+  var category = "0";
   var monthYear = '';
 
   @override

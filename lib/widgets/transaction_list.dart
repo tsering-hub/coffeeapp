@@ -24,8 +24,8 @@ class TransactionList extends StatelessWidget {
         .where('monthyear', isEqualTo: monthYear)
         .where('type', isEqualTo: type);
 
-    if (category != 'All') {
-      query = query.where("category", isEqualTo: category);
+    if (category != '0') {
+      query = query.where("categoryId", isEqualTo: category);
     }
 
     return FutureBuilder<QuerySnapshot>(

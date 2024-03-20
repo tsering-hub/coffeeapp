@@ -41,6 +41,28 @@ class Db {
     });
   }
 
+  Future<void> updateCategoryDetails(data, context) async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    await users
+        .doc(userId)
+        .collection('categories')
+        .doc(data['id'])
+        .update(data)
+        .then((value) => ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Category password updated')),
+            ))
+        .catchError((error) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Failed to update'),
+              content: Text(error.toString()),
+            );
+          });
+    });
+  }
+
   Future<void> deleteCategoryById(id, context) async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     await users
@@ -48,13 +70,10 @@ class Db {
         .collection('categories')
         .doc(id)
         .delete()
-        .then((value) => showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text('Category deleted'),
-              );
-            }))
+        .then((value) => // Handle delete
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('deleted')),
+            ))
         .catchError((error) {
       showDialog(
           context: context,

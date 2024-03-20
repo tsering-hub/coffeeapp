@@ -1,38 +1,71 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:coffeeapp/models/category_model.dart';
 import 'package:coffeeapp/utils/icons_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class CategoryDropDown extends StatelessWidget {
+class CategoryDropDown extends StatefulWidget {
   CategoryDropDown({super.key, this.cattype, required this.onChanged});
 
   final String? cattype;
   final ValueChanged<String?> onChanged;
 
+  @override
+  State<CategoryDropDown> createState() => _CategoryDropDownState();
+}
+
+class _CategoryDropDownState extends State<CategoryDropDown> {
   var appIcons = AppIcons();
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  List<CategoryModel> listCategoryModel = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('categories')
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      listCategoryModel.clear();
+      querySnapshot.docs.forEach((doc) {
+        var categoryModel =
+            CategoryModel(doc["id"], doc["timeStamp"], doc["title"]);
+        setState(() {
+          listCategoryModel.add(categoryModel);
+        });
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return DropdownButton<String>(
-        value: cattype,
+        value: widget.cattype,
         isExpanded: true,
         hint: Text("Select Category"),
-        items: appIcons.homeExpemseCategories
+        items: listCategoryModel
             .map((e) => DropdownMenuItem<String>(
-                value: e['name'],
+                value: e.getId(),
                 child: Row(
                   children: [
                     Icon(
-                      e['icon'],
+                      Icons.home,
                       color: Colors.black54,
                     ),
                     SizedBox(
                       width: 10,
                     ),
                     Text(
-                      e['name'],
+                      e.getTitle(),
                       style: TextStyle(color: Colors.black54),
                     ),
                   ],
                 )))
             .toList(),
-        onChanged: onChanged);
+        onChanged: widget.onChanged);
   }
 }

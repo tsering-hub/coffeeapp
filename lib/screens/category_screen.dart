@@ -28,6 +28,17 @@ class _CategoryScreenState extends State<CategoryScreen> {
         });
   }
 
+  _updatedialogBuilder(
+      BuildContext context, QueryDocumentSnapshot<Object?>? categoryData) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: AddCategoryForm(categoryData: categoryData),
+          );
+        });
+  }
+
   _deleteCategory(String? id) async {
     try {
       await db.deleteCategoryById(id, context);
@@ -90,7 +101,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 return CategoryCard(
                   pos: index + 1,
                   title: cardData['title'],
-                  onPressed: () {
+                  onEditPressed: () {
+                    _updatedialogBuilder(context, cardData);
+                  },
+                  onDeletePressed: () {
                     _deleteCategory(cardData['id']);
                   },
                 );

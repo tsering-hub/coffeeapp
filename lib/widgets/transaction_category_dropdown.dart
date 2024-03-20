@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:coffeeapp/models/category_model.dart';
 import 'package:coffeeapp/utils/icons_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -17,20 +20,31 @@ class TransactionCategoryDropDown extends StatefulWidget {
 class _TransactionCategoryDropDownState
     extends State<TransactionCategoryDropDown> {
   var appIcons = AppIcons();
-  List<Map<String, dynamic>> categorylist = [];
-
-  var addCat = {
-    "name": "All",
-    "icon": FontAwesomeIcons.cartPlus,
-  };
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+  List<CategoryModel> listCategoryModel = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    setState(() {
-      categorylist = appIcons.homeExpemseCategories;
-      categorylist.insert(0, addCat);
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('categories')
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      listCategoryModel.clear();
+      querySnapshot.docs.forEach((doc) {
+        var categoryModel =
+            CategoryModel(doc["id"], doc["timeStamp"], doc["title"]);
+        setState(() {
+          listCategoryModel.add(categoryModel);
+        });
+      });
+      setState(() {
+        listCategoryModel.insert(0, CategoryModel("0", 0, "All"));
+      });
     });
   }
 
@@ -40,21 +54,20 @@ class _TransactionCategoryDropDownState
         value: widget.cattype,
         isExpanded: true,
         hint: Text("Select Category"),
-        items: categorylist
+        items: listCategoryModel
             .map((e) => DropdownMenuItem<String>(
-                value: e['name'],
+                value: e.getId(),
                 child: Row(
                   children: [
                     Icon(
-                      e['icon'],
+                      Icons.home,
                       color: Colors.black54,
-                      size: 17,
                     ),
                     SizedBox(
-                      width: 20,
+                      width: 10,
                     ),
                     Text(
-                      e['name'],
+                      e.getTitle(),
                       style: TextStyle(color: Colors.black54),
                     ),
                   ],

@@ -9,7 +9,8 @@ import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
 
 class AddCategoryForm extends StatefulWidget {
-  const AddCategoryForm({super.key});
+  const AddCategoryForm({super.key, this.categoryData});
+  final QueryDocumentSnapshot<Object?>? categoryData;
 
   @override
   State<AddCategoryForm> createState() => _AddCategoryFormState();
@@ -17,12 +18,14 @@ class AddCategoryForm extends StatefulWidget {
 
 class _AddCategoryFormState extends State<AddCategoryForm> {
   var isLoader = false;
+  var isEdit = false;
 
   var appValidator = AppValidator();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   var titleEditController = TextEditingController();
   var uid = Uuid();
+
   var appIcons = AppIcons();
 
   Future<void> _submitForm() async {
@@ -33,6 +36,10 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
       final user = FirebaseAuth.instance.currentUser;
       int timeStamp = DateTime.now().millisecondsSinceEpoch;
       var id = uid.v4();
+
+      if (widget.categoryData != null) {
+        id = widget.categoryData?['id']!;
+      }
 
       var data = {
         'id': id,
@@ -51,6 +58,22 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
 
       setState(() {
         isLoader = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.categoryData != null) {
+      setState(() {
+        isEdit = true;
+        titleEditController.text = widget.categoryData?['title']!;
+      });
+    } else {
+      setState(() {
+        isEdit = false;
       });
     }
   }
@@ -82,7 +105,7 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
                   child: isLoader
                       ? Center(child: CircularProgressIndicator())
                       : Text(
-                          "Add Category",
+                          isEdit ? "Update Category" : "Add Category",
                           style: TextStyle(color: Colors.white),
                         )),
             )
