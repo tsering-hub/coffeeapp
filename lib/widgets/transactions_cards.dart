@@ -66,16 +66,13 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
           .doc(userId)
           .get();
 
-      int remainingAmount = userDoc['remainingAmount'];
       int totalCredit = userDoc['totalCredit'];
       int totalDebit = userDoc['totalDebit'];
       var transactionAmount = int.parse(transactionData!['amount']);
 
       if (transactionData['type'] == 'credit') {
-        remainingAmount -= transactionAmount;
         totalCredit -= transactionAmount;
       } else {
-        remainingAmount += transactionAmount;
         totalDebit -= transactionAmount;
       }
 
@@ -132,6 +129,7 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
           itemBuilder: (context, index) {
             var cardData = data[index];
             return TransactionCard(
+              pos: index + 1,
               data: cardData,
               onEditPressed: () {
                 _updatedialogBuilder(context, cardData);

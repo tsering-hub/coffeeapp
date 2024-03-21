@@ -11,8 +11,9 @@ class TransactionCard extends StatelessWidget {
     required this.data,
     required this.onEditPressed,
     required this.onDeletePressed,
+    this.pos,
   });
-
+  final int? pos;
   final dynamic data;
   final VoidCallback onEditPressed;
   final VoidCallback onDeletePressed;
@@ -39,27 +40,21 @@ class TransactionCard extends StatelessWidget {
         child: ListTile(
           minVerticalPadding: 10,
           contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
-          leading: Container(
-            width: 100,
-            height: 60,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
+          leading: Text(
+            "${pos}. ",
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
                 color: data['type'] == 'credit'
-                    ? Colors.green.withOpacity(0.2)
-                    : Colors.red.withOpacity(0.2)),
-            child: Center(
-                child: Text(
-              "data",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: data['type'] == 'credit'
-                      ? Colors.green.shade900
-                      : Colors.red.shade900),
-            )),
+                    ? Colors.green.shade900
+                    : Colors.red.shade900),
           ),
           title: Row(
             children: [
-              Expanded(child: Text("${data['title']}")),
+              Expanded(
+                  child: Text(
+                "${data['title']}",
+                style: TextStyle(fontWeight: FontWeight.w500),
+              )),
               Text(
                 "${data['type'] == 'credit' ? '+' : '-'} Rs ${data['amount']}",
                 style: TextStyle(
@@ -73,11 +68,32 @@ class TransactionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
+                data['categoryId'],
+              ),
+              Text(
                 formatedDate,
                 style: TextStyle(color: Colors.grey),
               ),
               Row(
                 children: [
+                  data['isAdvance']
+                      ? Expanded(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 2, horizontal: 20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.green.shade900,
+                            ),
+                            child: Text(
+                              "Advance",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        )
+                      : Expanded(child: SizedBox()),
                   Expanded(
                     child: Center(
                         child: IconButton(

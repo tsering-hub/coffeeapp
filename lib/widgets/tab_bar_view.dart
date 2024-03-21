@@ -2,10 +2,15 @@ import 'package:coffeeapp/widgets/transaction_list.dart';
 import 'package:flutter/material.dart';
 
 class TypeTabBar extends StatefulWidget {
-  TypeTabBar({super.key, required this.category, required this.monthYear});
+  TypeTabBar(
+      {super.key,
+      required this.category,
+      required this.monthYear,
+      required this.isAdvance});
 
   final String category;
   final String monthYear;
+  final bool isAdvance;
 
   @override
   State<TypeTabBar> createState() => _TypeTabBarState();
@@ -35,11 +40,13 @@ class _TypeTabBarState extends State<TypeTabBar> {
                   TransactionList(
                       category: widget.category,
                       type: 'credit',
-                      monthYear: widget.monthYear),
+                      monthYear: widget.monthYear,
+                      isAdvance: widget.isAdvance),
                   TransactionList(
                       category: widget.category,
                       type: 'debit',
-                      monthYear: widget.monthYear),
+                      monthYear: widget.monthYear,
+                      isAdvance: widget.isAdvance),
                 ]))
               ],
             )));

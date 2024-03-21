@@ -11,10 +11,12 @@ class TransactionList extends StatefulWidget {
       {super.key,
       required this.category,
       required this.type,
-      required this.monthYear});
+      required this.monthYear,
+      required this.isAdvance});
   final String category;
   final String type;
   final String monthYear;
+  final bool isAdvance;
 
   @override
   State<TransactionList> createState() => _TransactionListState();
@@ -35,10 +37,33 @@ class _TransactionListState extends State<TransactionList> {
         });
   }
 
-  _deleteTransaction(String? id) async {
+  _deleteTransaction(QueryDocumentSnapshot<Object?>? transactionData) async {
+    int timeStamp = DateTime.now().millisecondsSinceEpoch;
     try {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      int totalCredit = userDoc['totalCredit'];
+      int totalDebit = userDoc['totalDebit'];
+      var transactionAmount = int.parse(transactionData!['amount']);
+
+      if (transactionData['type'] == 'credit') {
+        totalCredit -= transactionAmount;
+      } else {
+        totalDebit -= transactionAmount;
+      }
+
+      await db.updateUserDetails({
+        "remainingAmount": totalCredit - totalDebit,
+        "totalCredit": totalCredit,
+        "totalDebit": totalDebit,
+        "updatedAt": timeStamp,
+      }, context);
+
       var updateData = {
-        "id": id,
+        "id": transactionData['id'],
         "isDelete": true,
       };
 
@@ -64,14 +89,15 @@ class _TransactionListState extends State<TransactionList> {
         .orderBy('timeStamp', descending: true)
         .where('monthyear', isEqualTo: widget.monthYear)
         .where('type', isEqualTo: widget.type)
+        .where('isAdvance', isEqualTo: widget.isAdvance)
         .where('isDelete', isEqualTo: false);
 
     if (widget.category != '0') {
       query = query.where("categoryId", isEqualTo: widget.category);
     }
 
-    return FutureBuilder<QuerySnapshot>(
-      future: query.limit(150).get(),
+    return StreamBuilder<QuerySnapshot>(
+      stream: query.snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return Text('Something went wrong');
@@ -88,12 +114,13 @@ class _TransactionListState extends State<TransactionList> {
           itemBuilder: (context, index) {
             var cardData = data[index];
             return TransactionCard(
+              pos: index + 1,
               data: cardData,
               onEditPressed: () {
                 _updatedialogBuilder(context, cardData);
               },
               onDeletePressed: () {
-                _deleteTransaction(cardData['id']);
+                _deleteTransaction(cardData);
               },
             );
           },

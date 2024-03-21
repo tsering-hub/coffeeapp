@@ -1,6 +1,7 @@
 import 'package:coffeeapp/screens/change_password_screen.dart';
 import 'package:coffeeapp/widgets/category_dropdown.dart';
 import 'package:coffeeapp/widgets/category_list.dart';
+import 'package:coffeeapp/widgets/checkbox_text.dart';
 import 'package:coffeeapp/widgets/tab_bar_view.dart';
 import 'package:coffeeapp/widgets/time_line_month.dart';
 import 'package:flutter/foundation.dart';
@@ -17,6 +18,7 @@ class TransactionScreen extends StatefulWidget {
 }
 
 class _TransactionScreenState extends State<TransactionScreen> {
+  bool isAdvance = false;
   var category = "0";
   var monthYear = '';
 
@@ -94,9 +96,21 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   });
                 }),
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: CheckboxText(
+                isChecked: isAdvance,
+                txt: "Advance",
+                onChanged: (bool? value) {
+                  setState(() {
+                    isAdvance = value!;
+                  });
+                }),
+          ),
           TypeTabBar(
             category: category,
             monthYear: monthYear,
+            isAdvance:isAdvance
           )
         ],
       ),

@@ -48,15 +48,12 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
           .doc(user!.uid)
           .get();
 
-      int remainingAmount = userDoc['remainingAmount'];
       int totalCredit = userDoc['totalCredit'];
       int totalDebit = userDoc['totalDebit'];
 
       if (type == 'credit') {
-        remainingAmount += amount;
         totalCredit += amount;
       } else {
-        remainingAmount -= amount;
         totalDebit += amount;
       }
 
