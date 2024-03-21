@@ -3,7 +3,6 @@ import 'package:coffeeapp/widgets/category_dropdown.dart';
 import 'package:coffeeapp/widgets/category_list.dart';
 import 'package:coffeeapp/widgets/tab_bar_view.dart';
 import 'package:coffeeapp/widgets/time_line_month.dart';
-import 'package:coffeeapp/widgets/transaction_category_dropdown.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -82,7 +81,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
           Padding(
             padding:
                 const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
-            child: TransactionCategoryDropDown(
+            child: CategoryDropDown(
+                from: "transactionscreen",
                 cattype: category,
                 onChanged: (String? value) {
                   setState(() {

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class HeroCard extends StatelessWidget {
   HeroCard({
@@ -64,7 +65,7 @@ class Cards extends StatelessWidget {
                       height: 1.2),
                 ),
                 Text(
-                  "Rs ${data['remainingAmount']}",
+                  "Rs ${NumberFormat('##,##,##,##,###').format(data['remainingAmount'])}",
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 50,
@@ -86,7 +87,9 @@ class Cards extends StatelessWidget {
                 CardOne(
                   color: Colors.green,
                   heading: 'Credit',
-                  amount: data['totalCredit'].toString(),
+                  amount: NumberFormat('##,##,##,##,###')
+                      .format(data['totalCredit'])
+                      .toString(),
                 ),
                 SizedBox(
                   width: 10,
@@ -94,7 +97,9 @@ class Cards extends StatelessWidget {
                 CardOne(
                     color: Colors.red,
                     heading: "Debit",
-                    amount: data['totalDebit'].toString())
+                    amount: NumberFormat('##,##,##,##,###')
+                        .format(data['totalDebit'])
+                        .toString())
               ],
             ),
           )

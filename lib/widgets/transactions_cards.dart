@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:coffeeapp/services/db.dart';
 import 'package:coffeeapp/utils/icons_list.dart';
+import 'package:coffeeapp/widgets/add_transaction_form.dart';
 import 'package:coffeeapp/widgets/transaction_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,12 +34,75 @@ class TransactionsCard extends StatelessWidget {
   }
 }
 
-class RecentTransactionsList extends StatelessWidget {
+class RecentTransactionsList extends StatefulWidget {
   RecentTransactionsList({
     super.key,
   });
 
+  @override
+  State<RecentTransactionsList> createState() => _RecentTransactionsListState();
+}
+
+class _RecentTransactionsListState extends State<RecentTransactionsList> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
+  var db = Db();
+
+  _updatedialogBuilder(
+      BuildContext context, QueryDocumentSnapshot<Object?>? transactionData) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: AddTransactionForm(transactionData: transactionData),
+          );
+        });
+  }
+
+  _deleteTransaction(QueryDocumentSnapshot<Object?>? transactionData) async {
+    int timeStamp = DateTime.now().millisecondsSinceEpoch;
+    try {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      int remainingAmount = userDoc['remainingAmount'];
+      int totalCredit = userDoc['totalCredit'];
+      int totalDebit = userDoc['totalDebit'];
+      var transactionAmount = int.parse(transactionData!['amount']);
+
+      if (transactionData['type'] == 'credit') {
+        remainingAmount -= transactionAmount;
+        totalCredit -= transactionAmount;
+      } else {
+        remainingAmount += transactionAmount;
+        totalDebit -= transactionAmount;
+      }
+
+      await db.updateUserDetails({
+        "remainingAmount": totalCredit - totalDebit,
+        "totalCredit": totalCredit,
+        "totalDebit": totalDebit,
+        "updatedAt": timeStamp,
+      }, context);
+
+      var updateData = {
+        "id": transactionData['id'],
+        "isDelete": true,
+      };
+
+      await db.updateTransactionDetails(updateData, context);
+    } catch (e) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Failed to delete'),
+              content: Text(e.toString()),
+            );
+          });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +111,7 @@ class RecentTransactionsList extends StatelessWidget {
           .collection("users")
           .doc(userId)
           .collection('transactions')
+          .where('isDelete', isEqualTo: false)
           .orderBy('timeStamp', descending: true)
           .limit(10)
           .snapshots(),
@@ -67,6 +133,12 @@ class RecentTransactionsList extends StatelessWidget {
             var cardData = data[index];
             return TransactionCard(
               data: cardData,
+              onEditPressed: () {
+                _updatedialogBuilder(context, cardData);
+              },
+              onDeletePressed: () {
+                _deleteTransaction(cardData);
+              },
             );
           },
         );

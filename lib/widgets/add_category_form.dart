@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:coffeeapp/services/db.dart';
 import 'package:coffeeapp/utils/appvalidator.dart';
 import 'package:coffeeapp/utils/icons_list.dart';
 import 'package:coffeeapp/widgets/category_dropdown.dart';
@@ -22,9 +23,9 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
 
   var appValidator = AppValidator();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  var db = Db();
   var titleEditController = TextEditingController();
-  var uid = Uuid();
+  // var uid = Uuid();
 
   var appIcons = AppIcons();
 
@@ -34,28 +35,18 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
         isLoader = true;
       });
       final user = FirebaseAuth.instance.currentUser;
-      int timeStamp = DateTime.now().millisecondsSinceEpoch;
-      var id = uid.v4();
 
-      if (widget.categoryData != null) {
-        id = widget.categoryData?['id']!;
+      if (widget.categoryData != null && isEdit == true) {
+        var data = {
+          "id": widget.categoryData?['id']!,
+          'title': titleEditController.text,
+        };
+        await db.updateCategoryDetails(data, context);
+      } else {
+        await db.addCategoryDetails(titleEditController.text, context);
       }
 
-      var data = {
-        'id': id,
-        'title': titleEditController.text,
-        "timeStamp": timeStamp,
-      };
-
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user!.uid)
-          .collection('categories')
-          .doc(id)
-          .set(data);
-
       Navigator.pop(context);
-
       setState(() {
         isLoader = false;
       });

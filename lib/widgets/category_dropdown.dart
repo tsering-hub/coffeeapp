@@ -5,8 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CategoryDropDown extends StatefulWidget {
-  CategoryDropDown({super.key, this.cattype, required this.onChanged});
+  CategoryDropDown(
+      {super.key, this.cattype, required this.onChanged, this.from});
 
+  final String? from;
   final String? cattype;
   final ValueChanged<String?> onChanged;
 
@@ -24,10 +26,12 @@ class _CategoryDropDownState extends State<CategoryDropDown> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     FirebaseFirestore.instance
         .collection('users')
         .doc(userId)
         .collection('categories')
+        .where('isDelete', isEqualTo: false)
         .get()
         .then((QuerySnapshot querySnapshot) {
       listCategoryModel.clear();
@@ -38,6 +42,11 @@ class _CategoryDropDownState extends State<CategoryDropDown> {
           listCategoryModel.add(categoryModel);
         });
       });
+      if (widget.from == 'transactionscreen') {
+        setState(() {
+          listCategoryModel.insert(0, CategoryModel("0", 0, "All"));
+        });
+      }
     });
   }
 

@@ -41,7 +41,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   _deleteCategory(String? id) async {
     try {
-      await db.deleteCategoryById(id, context);
+      var updateData = {
+        "id": id,
+        "isDelete": true,
+      };
+      await db.updateCategoryDetails(updateData, context);
     } catch (e) {
       showDialog(
           context: context,
@@ -80,6 +84,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               .collection("users")
               .doc(userId)
               .collection('categories')
+              .where('isDelete', isEqualTo: false)
               .orderBy('timeStamp', descending: true)
               .snapshots(),
           builder:
