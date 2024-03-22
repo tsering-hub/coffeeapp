@@ -83,9 +83,10 @@ class Db {
         .collection('categories')
         .doc(data['id'])
         .update(data)
-        .then((value) => ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Category updated')),
-            ))
+        .then((value) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(data['isDelete'] == true
+                ? 'Category deleted'
+                : 'Category updated'))))
         .catchError((error) {
       showDialog(
           context: context,
@@ -153,7 +154,10 @@ class Db {
         .doc(data['id'])
         .update(data)
         .then((value) => ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Transaction updated')),
+              SnackBar(
+                  content: Text(data['isDelete'] == true
+                      ? 'Transaction deleted'
+                      : 'Transaction updated')),
             ))
         .catchError((error) {
       showDialog(
