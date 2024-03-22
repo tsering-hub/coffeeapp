@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:coffeeapp/models/category_model.dart';
 import 'package:coffeeapp/services/db.dart';
 import 'package:coffeeapp/utils/icons_list.dart';
 import 'package:coffeeapp/widgets/add_transaction_form.dart';
@@ -46,6 +47,7 @@ class RecentTransactionsList extends StatefulWidget {
 class _RecentTransactionsListState extends State<RecentTransactionsList> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
   var db = Db();
+  List<CategoryModel> listCategoryModel = [];
 
   _updatedialogBuilder(
       BuildContext context, QueryDocumentSnapshot<Object?>? transactionData) {
@@ -102,6 +104,29 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('categories')
+        .where('isDelete', isEqualTo: false)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      listCategoryModel.clear();
+      querySnapshot.docs.forEach((doc) {
+        var categoryModel =
+            CategoryModel(doc["id"], doc["timeStamp"], doc["title"]);
+        setState(() {
+          listCategoryModel.add(categoryModel);
+        });
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
@@ -137,6 +162,7 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
               onDeletePressed: () {
                 _deleteTransaction(cardData);
               },
+              listCategoryModel: listCategoryModel,
             );
           },
         );

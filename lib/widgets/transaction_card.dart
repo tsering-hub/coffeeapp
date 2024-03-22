@@ -1,3 +1,4 @@
+import 'package:coffeeapp/models/category_model.dart';
 import 'package:coffeeapp/models/popupmenuitem_model.dart';
 import 'package:coffeeapp/utils/icons_list.dart';
 import 'package:coffeeapp/widgets/dynamic_popupmenu.dart';
@@ -7,25 +8,49 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
-class TransactionCard extends StatelessWidget {
+class TransactionCard extends StatefulWidget {
   TransactionCard({
     super.key,
     required this.data,
     required this.onEditPressed,
     required this.onDeletePressed,
     this.pos,
+    required this.listCategoryModel,
   });
   final int? pos;
   final dynamic data;
   final VoidCallback onEditPressed;
   final VoidCallback onDeletePressed;
+  final List<CategoryModel> listCategoryModel;
+
+  @override
+  State<TransactionCard> createState() => _TransactionCardState();
+}
+
+class _TransactionCardState extends State<TransactionCard> {
   var appIcons = AppIcons();
+  var categoryName;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    for (int i = 0; i < widget.listCategoryModel.length; i++) {
+      if (widget.data['categoryId'].toString() ==
+          widget.listCategoryModel[i].id) {
+        setState(() {
+          categoryName = widget.listCategoryModel[i].title;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    DateTime date = DateTime.fromMicrosecondsSinceEpoch(data['timeStamp']);
+    DateTime date =
+        DateTime.fromMicrosecondsSinceEpoch(widget.data['timeStamp']);
     String formatedDate = DateFormat('d MMM hh:mma').format(date);
-    int amount = int.parse(data['amount']);
+    int amount = int.parse(widget.data['amount']);
 
     final listPopUpMenuItemModel = [
       PopUpMenuItemModel(Icons.edit, "Edit"),
@@ -49,10 +74,10 @@ class TransactionCard extends StatelessWidget {
           minVerticalPadding: 10,
           contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
           leading: Text(
-            "${pos}. ",
+            "${widget.pos}. ",
             style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: data['type'] == 'credit'
+                color: widget.data['type'] == 'credit'
                     ? Colors.green.shade900
                     : Colors.red.shade900),
           ),
@@ -60,22 +85,23 @@ class TransactionCard extends StatelessWidget {
             children: [
               Expanded(
                   child: Text(
-                "${data['title']}",
+                "${widget.data['title']}",
                 style: TextStyle(fontWeight: FontWeight.w500),
               )),
               Text(
-                "${data['type'] == 'credit' ? '+' : '-'} Rs ${NumberFormat('##,##,##,##,###').format(amount)}",
+                "${widget.data['type'] == 'credit' ? '+' : '-'} Rs ${NumberFormat('##,##,##,##,###').format(amount)}",
                 style: TextStyle(
-                    color:
-                        data['type'] == 'credit' ? Colors.green : Colors.red),
+                    color: widget.data['type'] == 'credit'
+                        ? Colors.green
+                        : Colors.red),
               ),
               DynamicPopUpMenuButton(
                 onSelected: (String? value) {
                   if (value == listPopUpMenuItemModel[0].title) {
-                    onEditPressed();
+                    widget.onEditPressed();
                   }
                   if (value == listPopUpMenuItemModel[1].title) {
-                    onDeletePressed();
+                    widget.onDeletePressed();
                   }
                 },
                 listPopUpMenuItemModel: listPopUpMenuItemModel,
@@ -88,14 +114,14 @@ class TransactionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                data['categoryId'],
+                categoryName ?? "others",
               ),
               SizedBox(
                 height: 10,
               ),
               Row(
                 children: [
-                  data['isAdvance']
+                  widget.data['isAdvance']
                       ? Container(
                           padding:
                               EdgeInsets.symmetric(vertical: 2, horizontal: 20),

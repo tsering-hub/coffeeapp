@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:coffeeapp/models/category_model.dart';
 import 'package:coffeeapp/services/db.dart';
 import 'package:coffeeapp/widgets/add_transaction_form.dart';
 import 'package:coffeeapp/widgets/transaction_card.dart';
@@ -25,6 +26,7 @@ class TransactionList extends StatefulWidget {
 class _TransactionListState extends State<TransactionList> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
   var db = Db();
+  List<CategoryModel> listCategoryModel = [];
 
   _updatedialogBuilder(
       BuildContext context, QueryDocumentSnapshot<Object?>? transactionData) {
@@ -81,6 +83,29 @@ class _TransactionListState extends State<TransactionList> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('categories')
+        .where('isDelete', isEqualTo: false)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      listCategoryModel.clear();
+      querySnapshot.docs.forEach((doc) {
+        var categoryModel =
+            CategoryModel(doc["id"], doc["timeStamp"], doc["title"]);
+        setState(() {
+          listCategoryModel.add(categoryModel);
+        });
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     Query query = FirebaseFirestore.instance
         .collection("users")
@@ -109,7 +134,7 @@ class _TransactionListState extends State<TransactionList> {
 
         var data = snapshot.data!.docs;
         return Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
           child: ListView.builder(
             shrinkWrap: true,
             itemCount: data.length,
@@ -124,6 +149,7 @@ class _TransactionListState extends State<TransactionList> {
                 onDeletePressed: () {
                   _deleteTransaction(cardData);
                 },
+                listCategoryModel: listCategoryModel,
               );
             },
           ),
