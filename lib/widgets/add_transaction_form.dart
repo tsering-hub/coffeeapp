@@ -32,7 +32,11 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
   var uid = Uuid();
 
   Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
+    if (category == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Select category')),
+      );
+    } else if (_formKey.currentState!.validate() && category != null) {
       setState(() {
         isLoader = true;
       });

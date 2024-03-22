@@ -1,4 +1,6 @@
+import 'package:coffeeapp/models/popupmenuitem_model.dart';
 import 'package:coffeeapp/utils/icons_list.dart';
+import 'package:coffeeapp/widgets/dynamic_popupmenu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -23,6 +25,12 @@ class TransactionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     DateTime date = DateTime.fromMicrosecondsSinceEpoch(data['timeStamp']);
     String formatedDate = DateFormat('d MMM hh:mma').format(date);
+    int amount = int.parse(data['amount']);
+
+    final listPopUpMenuItemModel = [
+      PopUpMenuItemModel(Icons.edit, "Edit"),
+      PopUpMenuItemModel(Icons.delete, "Delete")
+    ];
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -56,11 +64,23 @@ class TransactionCard extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w500),
               )),
               Text(
-                "${data['type'] == 'credit' ? '+' : '-'} Rs ${data['amount']}",
+                "${data['type'] == 'credit' ? '+' : '-'} Rs ${NumberFormat('##,##,##,##,###').format(amount)}",
                 style: TextStyle(
                     color:
                         data['type'] == 'credit' ? Colors.green : Colors.red),
               ),
+              DynamicPopUpMenuButton(
+                onSelected: (String? value) {
+                  if (value == listPopUpMenuItemModel[0].title) {
+                    onEditPressed();
+                  }
+                  if (value == listPopUpMenuItemModel[1].title) {
+                    onDeletePressed();
+                  }
+                },
+                listPopUpMenuItemModel: listPopUpMenuItemModel,
+                mainIconData: Icons.more_vert,
+              )
             ],
           ),
           subtitle: Column(
@@ -70,54 +90,34 @@ class TransactionCard extends StatelessWidget {
               Text(
                 data['categoryId'],
               ),
-              Text(
-                formatedDate,
-                style: TextStyle(color: Colors.grey),
+              SizedBox(
+                height: 10,
               ),
               Row(
                 children: [
                   data['isAdvance']
-                      ? Expanded(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 2, horizontal: 20),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.green.shade900,
-                            ),
-                            child: Text(
-                              "Advance",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white),
-                            ),
+                      ? Container(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 2, horizontal: 20),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.green.shade900,
+                          ),
+                          child: Text(
+                            "Advance",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white),
                           ),
                         )
-                      : Expanded(child: SizedBox()),
-                  Expanded(
-                    child: Center(
-                        child: IconButton(
-                      onPressed: onEditPressed,
-                      icon: Icon(
-                        Icons.edit,
-                        size: 25,
-                        color: Colors.blue.shade900,
-                      ),
-                    )),
-                  ),
-                  Expanded(
-                    child: Center(
-                        child: IconButton(
-                      onPressed: onDeletePressed,
-                      icon: Icon(
-                        Icons.delete,
-                        size: 25,
-                        color: Colors.red.shade900,
-                      ),
-                    )),
+                      : SizedBox(),
+                  Spacer(),
+                  Text(
+                    formatedDate,
+                    style: TextStyle(color: Colors.grey),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

@@ -108,22 +108,25 @@ class _TransactionListState extends State<TransactionList> {
         }
 
         var data = snapshot.data!.docs;
-        return ListView.builder(
-          shrinkWrap: true,
-          itemCount: data.length,
-          itemBuilder: (context, index) {
-            var cardData = data[index];
-            return TransactionCard(
-              pos: index + 1,
-              data: cardData,
-              onEditPressed: () {
-                _updatedialogBuilder(context, cardData);
-              },
-              onDeletePressed: () {
-                _deleteTransaction(cardData);
-              },
-            );
-          },
+        return Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: data.length,
+            itemBuilder: (context, index) {
+              var cardData = data[index];
+              return TransactionCard(
+                pos: index + 1,
+                data: cardData,
+                onEditPressed: () {
+                  _updatedialogBuilder(context, cardData);
+                },
+                onDeletePressed: () {
+                  _deleteTransaction(cardData);
+                },
+              );
+            },
+          ),
         );
       },
     );
