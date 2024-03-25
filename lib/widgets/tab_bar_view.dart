@@ -22,13 +22,10 @@ class TypeTabBar extends StatefulWidget {
 class _TypeTabBarState extends State<TypeTabBar> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
   var type = 'credit';
-  var totalAmount = 0;
+  var totalAmount;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
+  getTotalAmount() {
+    totalAmount = 0;
     Query query = FirebaseFirestore.instance
         .collection("users")
         .doc(userId)
@@ -53,6 +50,24 @@ class _TypeTabBarState extends State<TypeTabBar> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    getTotalAmount();
+  }
+
+  @override
+  void didUpdateWidget(TypeTabBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.category != widget.category ||
+        oldWidget.monthYear != widget.monthYear ||
+        oldWidget.isAdvance != widget.isAdvance) {
+          getTotalAmount();
+        }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Expanded(
         child: DefaultTabController(
@@ -68,12 +83,14 @@ class _TypeTabBarState extends State<TypeTabBar> {
                                   {
                                     setState(() {
                                       type = 'credit';
+                                      getTotalAmount();
                                     })
                                   }
                                 else
                                   {
                                     setState(() {
                                       type = 'debit';
+                                      getTotalAmount();
                                     })
                                   }
                               },
